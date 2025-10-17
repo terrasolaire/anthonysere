@@ -13,7 +13,7 @@ const FILES_TO_CACHE = [
   "./assets/bootstrap-icons.css",
   "./assets/bootstrap.min.js",
   "./assets/icon-512.webp",
-  "./assets/ico-180.webp",
+  "./assets/ico-180-1.webp",
   "./assets/bootstrap.min.css",
   "./assets/bootstrap-icons.css",
   "./assets/bootstrap.min.js",
