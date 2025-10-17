@@ -1,6 +1,6 @@
 {
   "name": "Anthony SERE - Carte de visite",
-  "short_name": "Anthony SERE",
+  "short_name": "Carte AS",
   "description": "Carte de visite numérique d'Anthony SERE - Co-fondateur et Directeur de Terra Solaire",
   "start_url": "./",
   "display": "standalone",
@@ -16,7 +16,7 @@
       "purpose": "any maskable"
     },
     {
-      "src": "/assets/icon-512.webp",
+      "src": "/assets/icon-512-1.webp",
       "sizes": "512x512",
       "type": "image/webp",
       "purpose": "any maskable"
