@@ -4,8 +4,8 @@
   "description": "Carte de visite numérique d'Anthony SERE - Co-fondateur et Directeur de Terra Solaire",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#004779",
-  "theme_color": "#004779",
+  "background_color": "#f4f6f8",
+  "theme_color": "#f4f6f8",
   "scope": "./",
   "orientation": "portrait-primary",
   "icons": [
