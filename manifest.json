@@ -10,7 +10,7 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "./assets/ico-180.webp",
+      "src": "./assets/ico-180-1.webp",
       "sizes": "180x180",
       "type": "image/webp",
       "purpose": "any maskable"
