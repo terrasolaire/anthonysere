@@ -136,6 +136,10 @@ function openMaps(address) {
     window.open(googleMapsUrl, '_blank');
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    sendEvent('page_view', {});
+});
+
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
         navigator.serviceWorker.register('./service-worker.js')
