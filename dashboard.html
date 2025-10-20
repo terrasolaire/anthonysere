@@ -106,8 +106,8 @@
 
     .chart-wrapper {
       position: relative;
-      overflow: visible;
-      padding-bottom: 30px;
+      overflow: hidden;
+      padding: 15px;
       height: 260px;
     }
 
@@ -121,8 +121,19 @@
     }
 
     @media (max-width: 767px) {
+      .chart-wrapper {
+        height: 250px;
+        padding: 10px;
+        overflow: hidden;
+      }
+      
       canvas {
-        height: 300px !important;
+        height: 100% !important;
+        max-width: 100%;
+      }
+      
+      .card-body {
+        padding: 1rem;
       }
     }
   </style>
@@ -364,7 +375,19 @@
         options:{
           responsive:true,
           maintainAspectRatio:false,
-          plugins:{ legend:{ display:false } },
+          plugins:{ 
+            legend:{ 
+              display:false 
+            } 
+          },
+          layout: {
+            padding: {
+              top: 10,
+              bottom: 10,
+              left: 10,
+              right: 10
+            }
+          },
           scales:{
             y:{
               beginAtZero:true,
@@ -396,7 +419,19 @@
         options:{
           responsive:true,
           maintainAspectRatio:false,
-          plugins:{ legend:{ display:false } },
+          plugins:{ 
+            legend:{ 
+              display:false 
+            } 
+          },
+          layout: {
+            padding: {
+              top: 10,
+              bottom: 10,
+              left: 10,
+              right: 10
+            }
+          },
           scales:{
             y:{
               beginAtZero:true,
@@ -474,18 +509,45 @@
       new Chart(ctx,{
         type:'doughnut',
         data:{ labels, datasets:[{ data, backgroundColor: colors }]},
-        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom' } } }
+        options:{ 
+          responsive:true, 
+          maintainAspectRatio:false, 
+          plugins:{ 
+            legend:{ 
+              position:'bottom',
+              labels: {
+                padding: 10,
+                usePointStyle: true,
+                font: {
+                  size: 12
+                }
+              }
+            } 
+          },
+          layout: {
+            padding: {
+              top: 10,
+              bottom: 10,
+              left: 10,
+              right: 10
+            }
+          }
+        }
       });
     }
 
     function sumTypesInRange(events, days){
       const cutoff = Date.now() - days*24*60*60*1000;
-      const totals = { phone:0, email:0, address:0, website:0 };
+      const totals = { phone:0, email:0, address:0, website:0, page_view:0 };
       events.forEach(ev=>{
-        if(ev.name!=='contact_click') return;
         const ts = ev.ts ? Date.parse(ev.ts) : NaN; if(!ts || ts<cutoff) return;
-        let type=null; try{ const p = typeof ev.props==='string'? JSON.parse(ev.props):ev.props; type=p?.type||null; }catch(_){}
-        if(totals[type]!==undefined) totals[type] += 1;
+        
+        if(ev.name === 'contact_click') {
+          let type=null; try{ const p = typeof ev.props==='string'? JSON.parse(ev.props):ev.props; type=p?.type||null; }catch(_){}
+          if(totals[type]!==undefined) totals[type] += 1;
+        } else if(ev.name === 'page_view') {
+          totals.page_view += 1;
+        }
       });
       return totals;
     }
@@ -496,10 +558,10 @@
         const list = Array.isArray(recent)? recent : (recent.results||[]);
         const last15 = sumTypesInRange(list, 15);
         const last30 = sumTypesInRange(list, 30);
-        const labels = ['Téléphone','Email','Adresse','Site / Réseau'];
-        const colors = ['#004779','#05683a','#ff6f61','#ffca2e'];
-        renderDonut('weeklyChart', labels, [last15.phone,last15.email,last15.address,last15.website], colors);
-        renderDonut('monthlyChart', labels, [last30.phone,last30.email,last30.address,last30.website], colors);
+        const labels = ['Téléphone','Email','Adresse','Site / Réseau','Vues de page'];
+        const colors = ['#004779','#05683a','#ff6f61','#ffca2e','#6f42c1'];
+        renderDonut('weeklyChart', labels, [last15.phone,last15.email,last15.address,last15.website,last15.page_view], colors);
+        renderDonut('monthlyChart', labels, [last30.phone,last30.email,last30.address,last30.website,last30.page_view], colors);
       }catch(e){ console.error('trends error', e); }
     }
 
