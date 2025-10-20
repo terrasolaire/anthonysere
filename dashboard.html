@@ -17,24 +17,6 @@
     </div>
   </nav>
   <div class="container my-4">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <div class="row g-3 align-items-end">
-          <div class="col-lg-6">
-            <label for="workerUrl" class="form-label">URL du Worker Cloudflare (base)</label>
-            <input id="workerUrl" type="url" class="form-control" placeholder="https://cv-analytics.votrecompte.workers.dev" />
-            <div class="form-text">L'API lira <code>https://cv-analytics.wyxvgyqftb.workers.dev/stats</code></div>
-          </div>
-          <div class="col-auto">
-            <button id="saveUrlBtn" class="btn btn-primary">Enregistrer</button>
-          </div>
-          <div class="col-auto">
-            <button id="refreshBtn" class="btn btn-outline-secondary">Rafraîchir</button>
-          </div>
-        </div>
-        <div id="status" class="text-muted text-muted-small mt-2"></div>
-      </div>
-    </div>
 
     <div class="row g-3 my-3">
       <div class="col-md-4">
@@ -171,12 +153,7 @@
       </div>
     </div>
 
-    <div class="card shadow-sm my-3">
-      <div class="card-body">
-        <h5 class="card-title">Exemple d'appel API</h5>
-        <pre id="curlExample" class="text-muted" style="white-space:pre-wrap"></pre>
-      </div>
-    </div>
+    
   </div>
 
   <footer class="py-3 text-center text-muted text-muted-small">Fournit par Cloudflare D1 + Workers • LocalStorage pour la configuration</footer>
@@ -444,4 +421,5 @@
   <script src="assets/bootstrap.min.js"></script>
 </body>
 </html>
+
 
