@@ -5,26 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Analytics - Carte de visite</title>
   <style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;margin:0;background:#0f172a;color:#e2e8f0}
-    header{padding:16px 20px;background:#111827;position:sticky;top:0;z-index:2;display:flex;gap:12px;align-items:center}
+    :root{--bg:#0b1020;--panel:#0f172a;--border:#1f2942;--text:#e6ecf5;--muted:#93a4bf;--primary:#60a5fa;--accent:#34d399}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;margin:0;background:linear-gradient(180deg,#0b1020 0%,#0b1224 100%);color:var(--text)}
+    header{padding:18px 20px;background:#0c1326;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:2;display:flex;gap:12px;align-items:center}
     header h1{font-size:18px;margin:0;color:#fff}
-    .container{padding:20px;max-width:1100px;margin:0 auto}
-    .card{background:#111827;border:1px solid #1f2937;border-radius:12px;padding:16px;margin-bottom:16px}
+    .container{padding:22px;max-width:1100px;margin:0 auto}
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
     .row{display:grid;grid-template-columns:1fr;gap:16px}
     @media(min-width:900px){.row{grid-template-columns:1.3fr 1fr}}
-    label{font-size:12px;color:#94a3b8;display:block;margin-bottom:6px}
-    input[type="url"]{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #334155;background:#0b1220;color:#e2e8f0}
-    button{background:#2563eb;border:none;color:#fff;padding:10px 14px;border-radius:8px;cursor:pointer}
+    label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+    input[type="url"]{width:100%;padding:12px 12px;border-radius:10px;border:1px solid var(--border);background:#0b1220;color:var(--text)}
+    button{background:var(--primary);border:none;color:#0b1020;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600}
+    button.secondary{background:#1e293b;color:#e2e8f0}
     button:disabled{opacity:.6;cursor:not-allowed}
     table{width:100%;border-collapse:collapse}
-    th,td{text-align:left;padding:10px;border-bottom:1px solid #1f2937}
-    th{color:#94a3b8;font-weight:600}
-    .muted{color:#94a3b8;font-size:12px}
+    th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}
+    th{color:var(--muted);font-weight:700;letter-spacing:.02em}
+    .muted{color:var(--muted);font-size:12px}
     .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    .kpi{background:#0b1220;border:1px solid #1f2937;border-radius:10px;padding:12px}
-    .kpi .label{font-size:12px;color:#94a3b8}
-    .kpi .value{font-size:22px;font-weight:700;color:#fff}
-    .footer{padding:20px;text-align:center;color:#94a3b8;font-size:12px}
+    .kpi{background:#0b1220;border:1px solid var(--border);border-radius:12px;padding:14px}
+    .kpi .label{font-size:12px;color:var(--muted)}
+    .kpi .value{font-size:24px;font-weight:800;color:#fff}
+    .footer{padding:20px;text-align:center;color:var(--muted);font-size:12px}
     .row-actions{display:flex;gap:8px;align-items:end}
   </style>
 </head>
@@ -44,7 +46,7 @@
           <button id="saveUrlBtn">Enregistrer</button>
         </div>
         <div>
-          <button id="refreshBtn">Rafraîchir</button>
+          <button id="refreshBtn" class="secondary">Rafraîchir</button>
         </div>
       </div>
       <div id="status" class="muted" style="margin-top:8px"></div>
@@ -108,6 +110,18 @@
       return await res.json();
     }
 
+    function translateName(key){
+      const map={
+        'page_view':'Vue de page',
+        'share_contact':'Partage de la carte',
+        'add_to_contacts':'Ajout aux contacts',
+        'contact_click':'Clic sur contact',
+        'copy_contact':'Copie du lien',
+        'test_event':'Événement test'
+      };
+      return map[key]||key;
+    }
+
     function renderTable(rows) {
       const tbody = $('tableBody');
       tbody.innerHTML = '';
@@ -115,7 +129,7 @@
         const tr = document.createElement('tr');
         const tdA = document.createElement('td');
         const tdB = document.createElement('td');
-        tdA.textContent = r.name;
+        tdA.textContent = translateName(r.name);
         tdB.textContent = r.count;
         tr.appendChild(tdA); tr.appendChild(tdB);
         tbody.appendChild(tr);
@@ -134,7 +148,7 @@
     function renderBarChart(rows) {
       const canvas = $('barChart');
       const ctx = canvas.getContext('2d');
-      const labels = rows.map(r => r.name);
+      const labels = rows.map(r => translateName(r.name));
       const values = rows.map(r => r.count);
 
       // clear
@@ -158,10 +172,14 @@
         const x = pad + i * barW + barW * 0.15;
         const barH = (v / max) * (h - pad * 2);
         const y = h - pad - barH;
-        ctx.fillStyle = '#2563eb';
+        // dégradé de bleu → vert
+        const gradient = ctx.createLinearGradient(0, y, 0, h - pad);
+        gradient.addColorStop(0,'#60a5fa');
+        gradient.addColorStop(1,'#34d399');
+        ctx.fillStyle = gradient;
         ctx.fillRect(x, y, barW * 0.7, barH);
         // label
-        ctx.fillStyle = '#94a3b8';
+        ctx.fillStyle = '#b6c2d6';
         ctx.font = '12px system-ui';
         ctx.textAlign = 'center';
         ctx.fillText(labels[i], x + barW * 0.35, h - pad + 14);
@@ -205,4 +223,5 @@
   </script>
 </body>
 </html>
+
 
