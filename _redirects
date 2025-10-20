@@ -1,0 +1,8 @@
+# Redirections pour Netlify (alternative à .htaccess)
+# Format: source destination [status_code]
+
+# Redirection de toutes les pages vers l'accueil
+/* / 301
+
+# Redirection spécifique pour les assets
+/assets/* /assets/:splat 200

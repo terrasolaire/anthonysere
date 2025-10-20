@@ -1,0 +1,31 @@
+# Configuration Jekyll pour GitHub Pages
+baseurl: ""
+url: ""
+
+# Configuration des redirections
+include:
+  - _redirects
+
+# Configuration du site
+title: "Anthony SERE"
+description: "Carte de visite numérique - Anthony SERE"
+lang: fr
+
+# Configuration des plugins
+plugins:
+  - jekyll-redirect-from
+
+# Configuration des collections
+collections:
+  pages:
+    output: true
+    permalink: /:name/
+
+# Configuration des permaliens
+permalink: pretty
+
+# Configuration des exclusions
+exclude:
+  - README.md
+  - .htaccess
+  - .DS_Store
