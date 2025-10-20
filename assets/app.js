@@ -1,5 +1,7 @@
 const CONFIG = {
     contactLink: 'https://terrasolaire.github.io/anthonysere/',
+    // Renseignez ici l'URL de votre Worker Cloudflare (ex: https://cv-analytics.yourname.workers.dev/events)
+    analyticsEndpoint: 'https://cv-analytics.wyxvgyqftb.workers.dev/events',
     vcardData: `BEGIN:VCARD
 VERSION:3.0
 N:SERE;Anthony;;;
@@ -14,29 +16,37 @@ ADR:;;23 Zone Artisanale de Galmoisin;Saint Maurice la Clouère;;86160;France
 END:VCARD`
 };
 
-// Fonction de tracking Google Analytics 4
-function trackEvent(eventName, parameters = {}) {
-    if (typeof gtag === 'function') {
-        gtag('event', eventName, parameters);
+// Envoi d'un événement vers le collecteur Cloudflare (si configuré)
+async function sendEvent(eventName, properties) {
+    try {
+        if (!CONFIG.analyticsEndpoint) return; // pas d'envoi si non configuré
+
+        const payload = {
+            name: eventName,
+            properties: {
+                ...properties,
+                page: location.pathname + location.search,
+                referrer: document.referrer || null,
+                userAgent: navigator.userAgent,
+                language: navigator.language,
+                ts: new Date().toISOString()
+            }
+        };
+
+        await fetch(CONFIG.analyticsEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            keepalive: true,
+            body: JSON.stringify(payload)
+        });
+    } catch (_) {
+        // silencieux
     }
 }
 
-// Tracking de la visite de la page
-document.addEventListener('DOMContentLoaded', function() {
-    trackEvent('page_view', {
-        page_title: 'Carte de visite Anthony SERE',
-        page_location: window.location.href,
-        content_group1: 'carte_visite'
-    });
-});
-
 function shareContact() {
-    trackEvent('share_contact', {
-        method: navigator.share ? 'native_share' : 'copy_link',
-        event_category: 'engagement',
-        event_label: 'partage_carte_visite'
-    });
-    
+    sendEvent('share_contact', { method: navigator.share ? 'native_share' : 'copy_link' });
+
     if (navigator.share) {
         navigator.share({
             title: 'Anthony SERE',
@@ -49,22 +59,13 @@ function shareContact() {
 }
 
 function copyContact() {
-    trackEvent('copy_contact', {
-        event_category: 'engagement',
-        event_label: 'copie_lien_carte'
-    });
-    
+    sendEvent('copy_contact', {});
     copyToClipboard(CONFIG.contactLink);
     showNotification('Lien de la carte de visite copié !');
 }
 
 function addToContacts() {
-    trackEvent('add_to_contacts', {
-        event_category: 'conversion',
-        event_label: 'telechargement_vcard',
-        value: 1
-    });
-    
+    sendEvent('add_to_contacts', { file: 'Anthony_Sere.vcf' });
     const blob = new Blob([CONFIG.vcardData], { type: 'text/vcard' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -103,43 +104,22 @@ function showNotification(message) {
 }
 
 function openLink(url) {
-    trackEvent('contact_click', {
-        event_category: 'contact',
-        event_label: 'website',
-        contact_type: 'website',
-        contact_url: url
-    });
+    sendEvent('contact_click', { type: 'website', value: url });
     window.open(url, '_blank');
 }
 
 function openEmail(email) {
-    trackEvent('contact_click', {
-        event_category: 'contact',
-        event_label: 'email',
-        contact_type: 'email',
-        contact_email: email
-    });
+    sendEvent('contact_click', { type: 'email', value: email });
     window.location.href = `mailto:${email}`;
 }
 
 function openPhone(phone) {
-    trackEvent('contact_click', {
-        event_category: 'contact',
-        event_label: 'phone',
-        contact_type: 'phone',
-        contact_phone: phone
-    });
+    sendEvent('contact_click', { type: 'phone', value: phone });
     window.location.href = `tel:${phone}`;
 }
 
 function openMaps(address) {
-    trackEvent('contact_click', {
-        event_category: 'contact',
-        event_label: 'address',
-        contact_type: 'address',
-        contact_address: address
-    });
-    
+    sendEvent('contact_click', { type: 'address', value: address });
     const encodedAddress = encodeURIComponent(address);
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
@@ -157,4 +137,5 @@ if ('serviceWorker' in navigator) {
             });
     });
 }
+
 
