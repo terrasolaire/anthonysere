@@ -28,11 +28,9 @@ self.addEventListener("install", event => {
     caches.open(CACHE_NAME).then(cache => {
       return cache.addAll(FILES_TO_CACHE).then(() => {
         return cache.addAll(EXTERNAL_CACHE).catch(err => {
-          console.log("Erreur cache externe:", err);
           return Promise.resolve();
         });
       }).catch(err => {
-        console.log("Erreur cache local:", err);
         return Promise.resolve();
       });
     })
