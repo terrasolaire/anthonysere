@@ -1,6 +1,5 @@
 const CONFIG = {
     contactLink: 'https://terrasolaire.github.io/anthonysere/',
-    // Renseignez ici l'URL de votre Worker Cloudflare (ex: https://cv-analytics.yourname.workers.dev/events)
     analyticsEndpoint: 'https://cv-analytics.wyxvgyqftb.workers.dev/events',
     vcardData: `BEGIN:VCARD
 VERSION:3.0
@@ -16,10 +15,9 @@ ADR:;;23 Zone Artisanale de Galmoisin;Saint Maurice la Clouère;;86160;France
 END:VCARD`
 };
 
-// Envoi d'un événement vers le collecteur Cloudflare (si configuré)
 async function sendEvent(eventName, properties) {
     try {
-        if (!CONFIG.analyticsEndpoint) return; // pas d'envoi si non configuré
+        if (!CONFIG.analyticsEndpoint) return;
 
         const payload = {
             name: eventName,
@@ -43,7 +41,6 @@ async function sendEvent(eventName, properties) {
             body: JSON.stringify(payload)
         });
     } catch (_) {
-        // silencieux
     }
 }
 
@@ -107,7 +104,6 @@ function showNotification(message) {
 }
 
 function openLink(url) {
-    // Détecte un "provider" simple pour les réseaux
     let provider = null;
     try {
         const u = new URL(url);
