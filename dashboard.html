@@ -137,7 +137,7 @@
   <div class="container my-4">
 
     <div class="row g-2 my-3">
-      <div class="col-md-6">
+      <div class="col-md-4">
         <div class="card kpi-card h-100">
           <div class="card-body">
             <div class="text-muted text-uppercase text-muted-small">Événements total</div>
@@ -146,7 +146,16 @@
         </div>
       </div>
 
-      <div class="col-md-6">
+      <div class="col-md-4">
+        <div class="card kpi-card h-100">
+          <div class="card-body">
+            <div class="text-muted text-uppercase text-muted-small">Vues de page</div>
+            <div id="kpiPageViews" class="h3 mb-0 fw-bold">–</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
         <div class="card kpi-card h-100">
           <div class="card-body">
             <div class="text-muted text-uppercase text-muted-small">Top événement</div>
@@ -328,13 +337,13 @@
 
     function renderKpis(rows){
       const total = rows.reduce((s,r)=>s+(r.count||0),0);
-      const types = rows.length;
+      const pageViews = rows.find(r => r.name === 'page_view')?.count || 0;
       const top = rows[0]?`${translateName(rows[0].name)} (${rows[0].count})`:'–';
       const elTotal = $('kpiTotal');
-      const elTypes = $('kpiTypes');
+      const elPageViews = $('kpiPageViews');
       const elTop = $('kpiTop');
       if (elTotal) elTotal.textContent = total;
-      if (elTypes) elTypes.textContent = types; // optionnel si présent
+      if (elPageViews) elPageViews.textContent = pageViews;
       if (elTop) elTop.textContent = top;
     }
 
@@ -556,6 +565,7 @@
   </script>
 </body>
 </html>
+
 
 
 
