@@ -47,6 +47,7 @@
           <button id="refreshBtn">Rafraîchir</button>
         </div>
       </div>
+      <div id="status" class="muted" style="margin-top:8px"></div>
     </div>
 
     <div class="kpis">
@@ -175,13 +176,19 @@
         const data = await fetchStats();
         // Accepte soit un tableau direct, soit un objet { results: [...] }
         const rows = Array.isArray(data) ? data : (data.results || []);
+        console.log('Stats data:', data);
+        const normalized = rows.map(r => ({ name: r.name, count: Number(r.count || 0) }));
+        normalized.sort((a,b) => b.count - a.count);
         renderTable(rows);
-        renderKpis(rows);
-        renderBarChart(rows);
+        renderKpis(normalized);
+        renderBarChart(normalized);
+        const baseInfo = base ? `OK • URL: ${base.replace(/\/$/, '')}/stats • ${normalized.length} lignes` : 'Veuillez saisir l\'URL du Worker';
+        $('status').textContent = baseInfo;
       } catch (e) {
         renderTable([]);
         renderKpis([]);
         renderBarChart([]);
+        $('status').textContent = 'Erreur de chargement: ' + (e && e.message ? e.message : 'inconnue');
       }
     }
 
