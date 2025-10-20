@@ -26,9 +26,12 @@ async function sendEvent(eventName, properties) {
             properties: {
                 ...properties,
                 page: location.pathname + location.search,
+                pageTitle: document.title || null,
                 referrer: document.referrer || null,
                 userAgent: navigator.userAgent,
                 language: navigator.language,
+                screenW: (window.screen && window.screen.width) ? window.screen.width : null,
+                screenH: (window.screen && window.screen.height) ? window.screen.height : null,
                 ts: new Date().toISOString()
             }
         };
@@ -104,7 +107,17 @@ function showNotification(message) {
 }
 
 function openLink(url) {
-    sendEvent('contact_click', { type: 'website', value: url });
+    // Détecte un "provider" simple pour les réseaux
+    let provider = null;
+    try {
+        const u = new URL(url);
+        const h = u.hostname;
+        if (h.includes('linkedin')) provider = 'LinkedIn';
+        else if (h.includes('facebook')) provider = 'Facebook';
+        else if (h.includes('instagram')) provider = 'Instagram';
+        else provider = 'Site';
+    } catch(_) { provider = 'Site'; }
+    sendEvent('contact_click', { type: 'website', value: url, provider });
     window.open(url, '_blank');
 }
 
