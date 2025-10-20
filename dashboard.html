@@ -607,7 +607,7 @@
         renderShareTable(byShare.map(r=>({method:r.method,count:Number(r.count||0)})));
 
         try {
-          const recent = await fetchStats('/events/recent?limit=50');
+          const recent = await fetchStats('/events/recent?limit=15');
           console.log('recent events raw:', recent);
           const list = Array.isArray(recent) ? recent : (recent.results||[]);
           const tbody = $('tableRecent');
@@ -651,6 +651,7 @@
   </script>
 </body>
 </html>
+
 
 
 
