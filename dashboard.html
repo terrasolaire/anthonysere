@@ -173,7 +173,8 @@
       $('curlExample').textContent = base ? buildCurl(base) : 'Définissez l\'URL du Worker pour voir un exemple.';
       try {
         const data = await fetchStats();
-        const rows = data.results || [];
+        // Accepte soit un tableau direct, soit un objet { results: [...] }
+        const rows = Array.isArray(data) ? data : (data.results || []);
         renderTable(rows);
         renderKpis(rows);
         renderBarChart(rows);
@@ -197,3 +198,4 @@
   </script>
 </body>
 </html>
+
