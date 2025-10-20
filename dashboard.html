@@ -90,6 +90,85 @@
           </div>
         </div>
       </div>
+      <div class="col-12">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title">Détail des clics de contact</h5>
+            <div class="table-responsive">
+              <table class="table table-dark table-striped table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Type de contact</th>
+                    <th class="text-end">Compteur</th>
+                  </tr>
+                </thead>
+                <tbody id="tableContact"></tbody>
+              </table>
+              <div class="form-text mt-2">Si vide: ajoutez la route <code>/stats/by-contact</code> sur votre Worker.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title">Détail par valeur (numéro, email, URL)</h5>
+            <div class="table-responsive">
+              <table class="table table-dark table-striped table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Valeur</th>
+                    <th class="text-end">Compteur</th>
+                  </tr>
+                </thead>
+                <tbody id="tableContactValue"></tbody>
+              </table>
+              <div class="form-text mt-2">Si vide: ajoutez la route <code>/stats/by-contact-value</code> sur votre Worker.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title">Répartition des partages</h5>
+            <div class="table-responsive">
+              <table class="table table-dark table-striped table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Méthode</th>
+                    <th class="text-end">Compteur</th>
+                  </tr>
+                </thead>
+                <tbody id="tableShare"></tbody>
+              </table>
+              <div class="form-text mt-2">Si vide: ajoutez la route <code>/stats/by-share</code> sur votre Worker.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title">Événements récents</h5>
+            <div class="table-responsive">
+              <table class="table table-dark table-striped table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Horodatage</th>
+                    <th>Événement</th>
+                    <th>Page</th>
+                    <th>Pays</th>
+                  </tr>
+                </thead>
+                <tbody id="tableRecent"></tbody>
+              </table>
+              <div class="form-text mt-2">Si vide: ajoutez la route <code>/events/recent?limit=50</code> sur votre Worker.</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="card shadow-sm my-3">
@@ -154,6 +233,62 @@
       });
     }
 
+    function translateContactType(t){
+      const map={ phone:'Téléphone', email:'Email', address:'Adresse', website:'Site / Réseau' };
+      return map[t]||t||'—';
+    }
+
+    function renderContactTable(rows){
+      const tbody = $('tableContact');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      (rows||[]).forEach(r => {
+        const tr = document.createElement('tr');
+        const tdA = document.createElement('td');
+        const tdB = document.createElement('td');
+        tdB.className = 'text-end';
+        tdA.textContent = translateContactType(r.type);
+        tdB.textContent = r.count;
+        tr.appendChild(tdA); tr.appendChild(tdB);
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderContactValueTable(rows){
+      const tbody = $('tableContactValue');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      (rows||[]).forEach(r => {
+        const tr = document.createElement('tr');
+        const tdA = document.createElement('td');
+        const tdB = document.createElement('td');
+        const tdC = document.createElement('td');
+        tdC.className = 'text-end';
+        tdA.textContent = translateContactType(r.type);
+        tdB.textContent = r.value || '—';
+        tdC.textContent = r.count;
+        tr.appendChild(tdA); tr.appendChild(tdB); tr.appendChild(tdC);
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderShareTable(rows){
+      const tbody = $('tableShare');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      const label = (m)=> m==='native_share' ? 'Partage natif' : (m==='copy_link' ? 'Copie du lien' : (m||'—'));
+      (rows||[]).forEach(r => {
+        const tr = document.createElement('tr');
+        const tdA = document.createElement('td');
+        const tdB = document.createElement('td');
+        tdB.className = 'text-end';
+        tdA.textContent = label(r.method);
+        tdB.textContent = r.count;
+        tr.appendChild(tdA); tr.appendChild(tdB);
+        tbody.appendChild(tr);
+      });
+    }
+
     function renderKpis(rows) {
       const total = rows.reduce((s, r) => s + (r.count || 0), 0);
       const types = rows.length;
@@ -172,7 +307,7 @@
       // clear
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const w = canvas.width = canvas.clientWidth;
-      const h = canvas.height = 220;
+      const h = canvas.height = 260; // plus haut pour labels
       const pad = 30;
       const max = Math.max(1, ...values);
       const barW = (w - pad * 2) / (values.length || 1);
@@ -195,8 +330,13 @@
         // label
         ctx.fillStyle = '#adb5bd';
         ctx.font = '12px system-ui';
-        ctx.textAlign = 'center';
-        ctx.fillText(labels[i], x + barW * 0.35, h - pad + 14);
+        ctx.textAlign = 'right';
+        ctx.save();
+        ctx.translate(x + barW * 0.35, h - pad + 6);
+        ctx.rotate(-Math.PI/4); // -45° pour éviter chevauchement
+        const label = (labels[i]||'').toString().slice(0, 24);
+        ctx.fillText(label, 0, 0);
+        ctx.restore();
       });
     }
 
@@ -216,6 +356,72 @@
         renderBarChart(normalized);
         const baseInfo = base ? `OK • URL: ${base.replace(/\/$/, '')}/stats • ${normalized.length} lignes` : 'Veuillez saisir l\'URL du Worker';
         $('status').textContent = baseInfo;
+
+        // Optionnel: détail par type de contact si la route existe
+        try {
+          const res = await fetch(base.replace(/\/$/, '') + '/stats/by-contact', { cache: 'no-store' });
+          if (res.ok) {
+            const arr = await res.json();
+            const byType = Array.isArray(arr) ? arr : (arr.results || []);
+            renderContactTable(byType.map(r => ({ type: r.type, count: Number(r.count||0) })));
+          } else {
+            renderContactTable([]);
+          }
+        } catch(_) { renderContactTable([]); }
+
+        // Détail par valeur
+        try {
+          const res2 = await fetch(base.replace(/\/$/, '') + '/stats/by-contact-value', { cache: 'no-store' });
+          if (res2.ok) {
+            const arr2 = await res2.json();
+            const byVal = Array.isArray(arr2) ? arr2 : (arr2.results || []);
+            renderContactValueTable(byVal.map(r => ({ type: r.type, value: r.value, count: Number(r.count||0) })));
+          } else {
+            renderContactValueTable([]);
+          }
+        } catch(_) { renderContactValueTable([]); }
+
+        // Répartition des partages
+        try {
+          const res3 = await fetch(base.replace(/\/$/, '') + '/stats/by-share', { cache: 'no-store' });
+          if (res3.ok) {
+            const arr3 = await res3.json();
+            const byShare = Array.isArray(arr3) ? arr3 : (arr3.results || []);
+            renderShareTable(byShare.map(r => ({ method: r.method, count: Number(r.count||0) })));
+          } else {
+            renderShareTable([]);
+          }
+        } catch(_) { renderShareTable([]); }
+
+        // Événements récents
+        try {
+          const res4 = await fetch(base.replace(/\/$/, '') + '/events/recent?limit=50', { cache: 'no-store' });
+          if (res4.ok) {
+            const arr4 = await res4.json();
+            const rows4 = Array.isArray(arr4) ? arr4 : (arr4.results || []);
+            const tbody = $('tableRecent');
+            tbody.innerHTML = '';
+            rows4.forEach(ev => {
+              const tr = document.createElement('tr');
+              const tdA = document.createElement('td'); // ts
+              const tdB = document.createElement('td'); // name
+              const tdC = document.createElement('td'); // page
+              const tdD = document.createElement('td'); // country
+              tdA.textContent = ev.ts || '—';
+              tdB.textContent = translateName(ev.name || '—');
+              tdC.textContent = ev.page || '—';
+              tdD.textContent = ev.country || '—';
+              tr.appendChild(tdA); tr.appendChild(tdB); tr.appendChild(tdC); tr.appendChild(tdD);
+              tbody.appendChild(tr);
+            });
+          } else {
+            const tbody = $('tableRecent');
+            tbody.innerHTML = '';
+          }
+        } catch(_) {
+          const tbody = $('tableRecent');
+          if (tbody) tbody.innerHTML = '';
+        }
       } catch (e) {
         renderTable([]);
         renderKpis([]);
