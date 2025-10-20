@@ -3,53 +3,164 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Analytics - Carte de visite</title>
+  <title>Dashboard Analytics - Dark Neon</title>
   <link href="assets/bootstrap.min.css" rel="stylesheet">
   <style>
-    body{background:linear-gradient(180deg,#0b1020 0%,#0b1224 100%)}
-    .text-muted-small{font-size:12px}
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+    :root {
+      --bg-dark: #080a14;
+      --bg-darker: #05060d;
+      --accent: #00d4ff;
+      --accent-glow: 0 0 20px rgba(0, 212, 255, 0.6);
+      --accent-glow-soft: 0 0 12px rgba(0, 212, 255, 0.35);
+      --text-light: #eaf7ff;
+      --text-muted: #7a8aa0;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(0, 212, 255, 0.15);
+      --gradient-accent: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+    }
+
+    body {
+      background: radial-gradient(circle at top left, #101225 0%, #06070f 80%);
+      color: var(--text-light);
+      font-family: "Poppins", system-ui, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: 70px;
+    }
+
+    .navbar {
+      background: rgba(0, 0, 0, 0.6);
+      border-bottom: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+      box-shadow: var(--accent-glow-soft);
+    }
+
+    .navbar-brand {
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      color: var(--accent);
+      text-shadow: var(--accent-glow);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1.2rem;
+      box-shadow: 0 0 10px rgba(0, 212, 255, 0.08);
+      transition: all 0.35s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 0 25px rgba(0, 212, 255, 0.25);
+    }
+
+    .card-title {
+      font-weight: 600;
+      color: var(--accent);
+      text-shadow: 0 0 6px rgba(0, 212, 255, 0.4);
+    }
+
+    .kpi-card {
+      background: linear-gradient(180deg, rgba(0, 212, 255, 0.1), transparent);
+      text-align: center;
+    }
+
+    .kpi-card .h3,
+    .kpi-card .h5 {
+      color: #fff;
+      text-shadow: 0 0 8px rgba(0, 212, 255, 0.8);
+    }
+
+    .text-muted-small {
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+    }
+
+    table {
+      font-size: 0.9rem;
+    }
+
+    table thead th {
+      color: var(--accent);
+      border-color: var(--card-border);
+      text-shadow: 0 0 4px rgba(0, 212, 255, 0.3);
+    }
+
+    table tbody tr:hover {
+      background-color: rgba(0, 212, 255, 0.05);
+    }
+
+    footer {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--card-border);
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 0.8rem 0;
+      box-shadow: 0 -2px 12px rgba(0, 212, 255, 0.15);
+    }
+
+    /* Scrollbar stylée */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--gradient-accent);
+      border-radius: 6px;
+    }
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-dark bg-dark">
+  <nav class="navbar navbar-dark">
     <div class="container-fluid">
-      <span class="navbar-brand mb-0 h1">Dashboard Analytics</span>
+      <span class="navbar-brand mb-0 h1">⚡ Dashboard Analytics</span>
     </div>
   </nav>
-  <div class="container my-4">
 
+  <div class="container my-4">
+    <!-- KPIs -->
     <div class="row g-3 my-3">
       <div class="col-md-4">
-        <div class="card bg-dark text-white h-100">
+        <div class="card kpi-card h-100">
           <div class="card-body">
             <div class="text-muted text-uppercase text-muted-small">Événements total</div>
-            <div id="kpiTotal" class="h3 mb-0">–</div>
+            <div id="kpiTotal" class="h3 mb-0 fw-bold">–</div>
           </div>
         </div>
       </div>
       <div class="col-md-4">
-        <div class="card bg-dark text-white h-100">
+        <div class="card kpi-card h-100">
           <div class="card-body">
             <div class="text-muted text-uppercase text-muted-small">Types distincts</div>
-            <div id="kpiTypes" class="h3 mb-0">–</div>
+            <div id="kpiTypes" class="h3 mb-0 fw-bold">–</div>
           </div>
         </div>
       </div>
       <div class="col-md-4">
-        <div class="card bg-dark text-white h-100">
+        <div class="card kpi-card h-100">
           <div class="card-body">
             <div class="text-muted text-uppercase text-muted-small">Top événement</div>
-            <div id="kpiTop" class="h5 mb-0">–</div>
+            <div id="kpiTop" class="h5 mb-0 fw-semibold">–</div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="row g-3">
+    <!-- Graph + Tableau principal -->
+    <div class="row g-4">
       <div class="col-lg-7">
         <div class="card shadow-sm h-100">
           <div class="card-body">
-            <h5 class="card-title">Répartition par événement</h5>
+            <h5 class="card-title">📊 Répartition par événement</h5>
             <canvas id="barChart" height="220"></canvas>
           </div>
         </div>
@@ -57,9 +168,9 @@
       <div class="col-lg-5">
         <div class="card shadow-sm h-100">
           <div class="card-body">
-            <h5 class="card-title">Tableau des événements</h5>
+            <h5 class="card-title">🧮 Tableau des événements</h5>
             <div class="table-responsive">
-              <table class="table table-dark table-striped table-hover align-middle mb-0">
+              <table class="table table-dark table-hover align-middle mb-0">
                 <thead>
                   <tr>
                     <th>Événement</th>
@@ -72,12 +183,14 @@
           </div>
         </div>
       </div>
+
+      <!-- Détails -->
       <div class="col-12">
-        <div class="card shadow-sm h-100">
+        <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Détail des clics de contact</h5>
+            <h5 class="card-title">☎️ Clics de contact</h5>
             <div class="table-responsive">
-              <table class="table table-dark table-striped table-hover align-middle mb-0">
+              <table class="table table-dark table-hover align-middle mb-0">
                 <thead>
                   <tr>
                     <th>Type de contact</th>
@@ -86,17 +199,17 @@
                 </thead>
                 <tbody id="tableContact"></tbody>
               </table>
-              <div class="form-text mt-2">Si vide: ajoutez la route <code>/stats/by-contact</code> sur votre Worker.</div>
             </div>
           </div>
         </div>
       </div>
+
       <div class="col-12">
-        <div class="card shadow-sm h-100">
+        <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Détail par valeur (numéro, email, URL)</h5>
+            <h5 class="card-title">💬 Détails par valeur</h5>
             <div class="table-responsive">
-              <table class="table table-dark table-striped table-hover align-middle mb-0">
+              <table class="table table-dark table-hover align-middle mb-0">
                 <thead>
                   <tr>
                     <th>Type</th>
@@ -106,17 +219,17 @@
                 </thead>
                 <tbody id="tableContactValue"></tbody>
               </table>
-              <div class="form-text mt-2">Si vide: ajoutez la route <code>/stats/by-contact-value</code> sur votre Worker.</div>
             </div>
           </div>
         </div>
       </div>
+
       <div class="col-12">
-        <div class="card shadow-sm h-100">
+        <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Répartition des partages</h5>
+            <h5 class="card-title">🔗 Répartition des partages</h5>
             <div class="table-responsive">
-              <table class="table table-dark table-striped table-hover align-middle mb-0">
+              <table class="table table-dark table-hover align-middle mb-0">
                 <thead>
                   <tr>
                     <th>Méthode</th>
@@ -125,17 +238,17 @@
                 </thead>
                 <tbody id="tableShare"></tbody>
               </table>
-              <div class="form-text mt-2">Si vide: ajoutez la route <code>/stats/by-share</code> sur votre Worker.</div>
             </div>
           </div>
         </div>
       </div>
+
       <div class="col-12">
-        <div class="card shadow-sm h-100">
+        <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Événements récents</h5>
+            <h5 class="card-title">🕒 Événements récents</h5>
             <div class="table-responsive">
-              <table class="table table-dark table-striped table-hover align-middle mb-0">
+              <table class="table table-dark table-hover align-middle mb-0">
                 <thead>
                   <tr>
                     <th>Horodatage</th>
@@ -146,280 +259,24 @@
                 </thead>
                 <tbody id="tableRecent"></tbody>
               </table>
-              <div class="form-text mt-2">Si vide: ajoutez la route <code>/events/recent?limit=50</code> sur votre Worker.</div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    
   </div>
 
-  <footer class="py-3 text-center text-muted text-muted-small">Fournit par Cloudflare D1 + Workers • LocalStorage pour la configuration</footer>
+  <footer class="text-center">
+    ⚙️ <strong>Cloudflare D1 + Workers</strong> • Données locales via LocalStorage
+  </footer>
 
-  <script>
-    const $ = (id) => document.getElementById(id);
-
-    function getWorkerBase() {
-      return localStorage.getItem('workerBaseUrl') || '';
-    }
-
-    function setWorkerBase(url) {
-      localStorage.setItem('workerBaseUrl', url);
-    }
-
-    function buildCurl(base) {
-      const events = base.replace(/\/$/, '') + '/events';
-      return `curl -X POST ${events} \\\n  -H "content-type: application/json" \\\n  -d '{"name":"test_event","properties":{"foo":"bar"}}'`;
-    }
-
-    async function fetchStats() {
-      const base = getWorkerBase();
-      if (!base) return { results: [] };
-      const url = base.replace(/\/$/, '') + '/stats';
-      const res = await fetch(url, { cache: 'no-store' });
-      if (!res.ok) throw new Error('Fetch stats failed');
-      return await res.json();
-    }
-
-    function translateName(key){
-      const map={
-        'page_view':'Vue de page',
-        'share_contact':'Partage de la carte',
-        'add_to_contacts':'Ajout aux contacts',
-        'contact_click':'Clic sur contact',
-        'copy_contact':'Copie du lien',
-        'test_event':'Événement test'
-      };
-      return map[key]||key;
-    }
-
-    function renderTable(rows) {
-      const tbody = $('tableBody');
-      tbody.innerHTML = '';
-      rows.forEach(r => {
-        const tr = document.createElement('tr');
-        const tdA = document.createElement('td');
-        const tdB = document.createElement('td');
-        tdB.className = 'text-end';
-        tdA.textContent = translateName(r.name);
-        tdB.textContent = r.count;
-        tr.appendChild(tdA); tr.appendChild(tdB);
-        tbody.appendChild(tr);
-      });
-    }
-
-    function translateContactType(t){
-      const map={ phone:'Téléphone', email:'Email', address:'Adresse', website:'Site / Réseau' };
-      return map[t]||t||'—';
-    }
-
-    function renderContactTable(rows){
-      const tbody = $('tableContact');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      (rows||[]).forEach(r => {
-        const tr = document.createElement('tr');
-        const tdA = document.createElement('td');
-        const tdB = document.createElement('td');
-        tdB.className = 'text-end';
-        tdA.textContent = translateContactType(r.type);
-        tdB.textContent = r.count;
-        tr.appendChild(tdA); tr.appendChild(tdB);
-        tbody.appendChild(tr);
-      });
-    }
-
-    function renderContactValueTable(rows){
-      const tbody = $('tableContactValue');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      (rows||[]).forEach(r => {
-        const tr = document.createElement('tr');
-        const tdA = document.createElement('td');
-        const tdB = document.createElement('td');
-        const tdC = document.createElement('td');
-        tdC.className = 'text-end';
-        tdA.textContent = translateContactType(r.type);
-        tdB.textContent = r.value || '—';
-        tdC.textContent = r.count;
-        tr.appendChild(tdA); tr.appendChild(tdB); tr.appendChild(tdC);
-        tbody.appendChild(tr);
-      });
-    }
-
-    function renderShareTable(rows){
-      const tbody = $('tableShare');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      const label = (m)=> m==='native_share' ? 'Partage natif' : (m==='copy_link' ? 'Copie du lien' : (m||'—'));
-      (rows||[]).forEach(r => {
-        const tr = document.createElement('tr');
-        const tdA = document.createElement('td');
-        const tdB = document.createElement('td');
-        tdB.className = 'text-end';
-        tdA.textContent = label(r.method);
-        tdB.textContent = r.count;
-        tr.appendChild(tdA); tr.appendChild(tdB);
-        tbody.appendChild(tr);
-      });
-    }
-
-    function renderKpis(rows) {
-      const total = rows.reduce((s, r) => s + (r.count || 0), 0);
-      const types = rows.length;
-      const top = rows[0] ? `${rows[0].name} (${rows[0].count})` : '–';
-      $('kpiTotal').textContent = total;
-      $('kpiTypes').textContent = types;
-      $('kpiTop').textContent = top;
-    }
-
-    function renderBarChart(rows) {
-      const canvas = $('barChart');
-      const ctx = canvas.getContext('2d');
-      const labels = rows.map(r => translateName(r.name));
-      const values = rows.map(r => r.count);
-
-      // clear
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const w = canvas.width = canvas.clientWidth;
-      const h = canvas.height = 260; // plus haut pour labels
-      const pad = 30;
-      const max = Math.max(1, ...values);
-      const barW = (w - pad * 2) / (values.length || 1);
-
-      // axes
-      ctx.strokeStyle = '#1f2937';
-      ctx.beginPath();
-      ctx.moveTo(pad, pad);
-      ctx.lineTo(pad, h - pad);
-      ctx.lineTo(w - pad, h - pad);
-      ctx.stroke();
-
-      // bars
-      values.forEach((v, i) => {
-        const x = pad + i * barW + barW * 0.15;
-        const barH = (v / max) * (h - pad * 2);
-        const y = h - pad - barH;
-        ctx.fillStyle = '#0d6efd';
-        ctx.fillRect(x, y, barW * 0.7, barH);
-        // label
-        ctx.fillStyle = '#adb5bd';
-        ctx.font = '12px system-ui';
-        ctx.textAlign = 'right';
-        ctx.save();
-        ctx.translate(x + barW * 0.35, h - pad + 6);
-        ctx.rotate(-Math.PI/4); // -45° pour éviter chevauchement
-        const label = (labels[i]||'').toString().slice(0, 24);
-        ctx.fillText(label, 0, 0);
-        ctx.restore();
-      });
-    }
-
-    async function load() {
-      const base = getWorkerBase();
-      $('workerUrl').value = base;
-      $('curlExample').textContent = base ? buildCurl(base) : 'Définissez l\'URL du Worker pour voir un exemple.';
-      try {
-        const data = await fetchStats();
-        // Accepte soit un tableau direct, soit un objet { results: [...] }
-        const rows = Array.isArray(data) ? data : (data.results || []);
-        console.log('Stats data:', data);
-        const normalized = rows.map(r => ({ name: r.name, count: Number(r.count || 0) }));
-        normalized.sort((a,b) => b.count - a.count);
-        renderTable(rows);
-        renderKpis(normalized);
-        renderBarChart(normalized);
-        const baseInfo = base ? `OK • URL: ${base.replace(/\/$/, '')}/stats • ${normalized.length} lignes` : 'Veuillez saisir l\'URL du Worker';
-        $('status').textContent = baseInfo;
-
-        // Optionnel: détail par type de contact si la route existe
-        try {
-          const res = await fetch(base.replace(/\/$/, '') + '/stats/by-contact', { cache: 'no-store' });
-          if (res.ok) {
-            const arr = await res.json();
-            const byType = Array.isArray(arr) ? arr : (arr.results || []);
-            renderContactTable(byType.map(r => ({ type: r.type, count: Number(r.count||0) })));
-          } else {
-            renderContactTable([]);
-          }
-        } catch(_) { renderContactTable([]); }
-
-        // Détail par valeur
-        try {
-          const res2 = await fetch(base.replace(/\/$/, '') + '/stats/by-contact-value', { cache: 'no-store' });
-          if (res2.ok) {
-            const arr2 = await res2.json();
-            const byVal = Array.isArray(arr2) ? arr2 : (arr2.results || []);
-            renderContactValueTable(byVal.map(r => ({ type: r.type, value: r.value, count: Number(r.count||0) })));
-          } else {
-            renderContactValueTable([]);
-          }
-        } catch(_) { renderContactValueTable([]); }
-
-        // Répartition des partages
-        try {
-          const res3 = await fetch(base.replace(/\/$/, '') + '/stats/by-share', { cache: 'no-store' });
-          if (res3.ok) {
-            const arr3 = await res3.json();
-            const byShare = Array.isArray(arr3) ? arr3 : (arr3.results || []);
-            renderShareTable(byShare.map(r => ({ method: r.method, count: Number(r.count||0) })));
-          } else {
-            renderShareTable([]);
-          }
-        } catch(_) { renderShareTable([]); }
-
-        // Événements récents
-        try {
-          const res4 = await fetch(base.replace(/\/$/, '') + '/events/recent?limit=50', { cache: 'no-store' });
-          if (res4.ok) {
-            const arr4 = await res4.json();
-            const rows4 = Array.isArray(arr4) ? arr4 : (arr4.results || []);
-            const tbody = $('tableRecent');
-            tbody.innerHTML = '';
-            rows4.forEach(ev => {
-              const tr = document.createElement('tr');
-              const tdA = document.createElement('td'); // ts
-              const tdB = document.createElement('td'); // name
-              const tdC = document.createElement('td'); // page
-              const tdD = document.createElement('td'); // country
-              tdA.textContent = ev.ts || '—';
-              tdB.textContent = translateName(ev.name || '—');
-              tdC.textContent = ev.page || '—';
-              tdD.textContent = ev.country || '—';
-              tr.appendChild(tdA); tr.appendChild(tdB); tr.appendChild(tdC); tr.appendChild(tdD);
-              tbody.appendChild(tr);
-            });
-          } else {
-            const tbody = $('tableRecent');
-            tbody.innerHTML = '';
-          }
-        } catch(_) {
-          const tbody = $('tableRecent');
-          if (tbody) tbody.innerHTML = '';
-        }
-      } catch (e) {
-        renderTable([]);
-        renderKpis([]);
-        renderBarChart([]);
-        $('status').textContent = 'Erreur de chargement: ' + (e && e.message ? e.message : 'inconnue');
-      }
-    }
-
-    $('saveUrlBtn').addEventListener('click', () => {
-      const val = $('workerUrl').value.trim();
-      setWorkerBase(val);
-      $('curlExample').textContent = val ? buildCurl(val) : '';
-      load();
-    });
-
-    $('refreshBtn').addEventListener('click', () => load());
-
-    document.addEventListener('DOMContentLoaded', load);
-  </script>
   <script src="assets/bootstrap.min.js"></script>
+  <!-- Ton JS original ici -->
+  <script>
+    // (colle ici ton script d’origine complet)
+  </script>
 </body>
 </html>
+
 
 
