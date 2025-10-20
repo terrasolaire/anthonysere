@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Analytics - Carte de visite</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;margin:0;background:#0f172a;color:#e2e8f0}
+    header{padding:16px 20px;background:#111827;position:sticky;top:0;z-index:2;display:flex;gap:12px;align-items:center}
+    header h1{font-size:18px;margin:0;color:#fff}
+    .container{padding:20px;max-width:1100px;margin:0 auto}
+    .card{background:#111827;border:1px solid #1f2937;border-radius:12px;padding:16px;margin-bottom:16px}
+    .row{display:grid;grid-template-columns:1fr;gap:16px}
+    @media(min-width:900px){.row{grid-template-columns:1.3fr 1fr}}
+    label{font-size:12px;color:#94a3b8;display:block;margin-bottom:6px}
+    input[type="url"]{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #334155;background:#0b1220;color:#e2e8f0}
+    button{background:#2563eb;border:none;color:#fff;padding:10px 14px;border-radius:8px;cursor:pointer}
+    button:disabled{opacity:.6;cursor:not-allowed}
+    table{width:100%;border-collapse:collapse}
+    th,td{text-align:left;padding:10px;border-bottom:1px solid #1f2937}
+    th{color:#94a3b8;font-weight:600}
+    .muted{color:#94a3b8;font-size:12px}
+    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .kpi{background:#0b1220;border:1px solid #1f2937;border-radius:10px;padding:12px}
+    .kpi .label{font-size:12px;color:#94a3b8}
+    .kpi .value{font-size:22px;font-weight:700;color:#fff}
+    .footer{padding:20px;text-align:center;color:#94a3b8;font-size:12px}
+    .row-actions{display:flex;gap:8px;align-items:end}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Dashboard Analytics</h1>
+  </header>
+  <div class="container">
+    <div class="card">
+      <div class="row-actions">
+        <div style="flex:1">
+          <label for="workerUrl">URL du Worker Cloudflare (base)</label>
+          <input id="workerUrl" type="url" placeholder="https://cv-analytics.votrecompte.workers.dev" />
+          <div class="muted">L'API lira <code>https://cv-analytics.wyxvgyqftb.workers.dev/stats</code></div>
+        </div>
+        <div>
+          <button id="saveUrlBtn">Enregistrer</button>
+        </div>
+        <div>
+          <button id="refreshBtn">Rafraîchir</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="label">Événements total</div><div id="kpiTotal" class="value">–</div></div>
+      <div class="kpi"><div class="label">Types distincts</div><div id="kpiTypes" class="value">–</div></div>
+      <div class="kpi"><div class="label">Top événement</div><div id="kpiTop" class="value">–</div></div>
+    </div>
+
+    <div class="row">
+      <div class="card">
+        <h3 style="margin:0 0 8px 0;color:#fff;font-size:16px">Répartition par événement</h3>
+        <canvas id="barChart" height="200"></canvas>
+      </div>
+      <div class="card">
+        <h3 style="margin:0 0 8px 0;color:#fff;font-size:16px">Tableau des événements</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Événement</th>
+              <th>Compteur</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 8px 0;color:#fff;font-size:16px">Exemple d'appel API</h3>
+      <pre id="curlExample" class="muted" style="white-space:pre-wrap"></pre>
+    </div>
+  </div>
+
+  <div class="footer">Fournit par Cloudflare D1 + Workers • LocalStorage pour la configuration</div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function getWorkerBase() {
+      return localStorage.getItem('workerBaseUrl') || '';
+    }
+
+    function setWorkerBase(url) {
+      localStorage.setItem('workerBaseUrl', url);
+    }
+
+    function buildCurl(base) {
+      const events = base.replace(/\/$/, '') + '/events';
+      return `curl -X POST ${events} \\\n  -H "content-type: application/json" \\\n  -d '{"name":"test_event","properties":{"foo":"bar"}}'`;
+    }
+
+    async function fetchStats() {
+      const base = getWorkerBase();
+      if (!base) return { results: [] };
+      const url = base.replace(/\/$/, '') + '/stats';
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error('Fetch stats failed');
+      return await res.json();
+    }
+
+    function renderTable(rows) {
+      const tbody = $('tableBody');
+      tbody.innerHTML = '';
+      rows.forEach(r => {
+        const tr = document.createElement('tr');
+        const tdA = document.createElement('td');
+        const tdB = document.createElement('td');
+        tdA.textContent = r.name;
+        tdB.textContent = r.count;
+        tr.appendChild(tdA); tr.appendChild(tdB);
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderKpis(rows) {
+      const total = rows.reduce((s, r) => s + (r.count || 0), 0);
+      const types = rows.length;
+      const top = rows[0] ? `${rows[0].name} (${rows[0].count})` : '–';
+      $('kpiTotal').textContent = total;
+      $('kpiTypes').textContent = types;
+      $('kpiTop').textContent = top;
+    }
+
+    function renderBarChart(rows) {
+      const canvas = $('barChart');
+      const ctx = canvas.getContext('2d');
+      const labels = rows.map(r => r.name);
+      const values = rows.map(r => r.count);
+
+      // clear
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const w = canvas.width = canvas.clientWidth;
+      const h = canvas.height = 220;
+      const pad = 30;
+      const max = Math.max(1, ...values);
+      const barW = (w - pad * 2) / (values.length || 1);
+
+      // axes
+      ctx.strokeStyle = '#1f2937';
+      ctx.beginPath();
+      ctx.moveTo(pad, pad);
+      ctx.lineTo(pad, h - pad);
+      ctx.lineTo(w - pad, h - pad);
+      ctx.stroke();
+
+      // bars
+      values.forEach((v, i) => {
+        const x = pad + i * barW + barW * 0.15;
+        const barH = (v / max) * (h - pad * 2);
+        const y = h - pad - barH;
+        ctx.fillStyle = '#2563eb';
+        ctx.fillRect(x, y, barW * 0.7, barH);
+        // label
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '12px system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillText(labels[i], x + barW * 0.35, h - pad + 14);
+      });
+    }
+
+    async function load() {
+      const base = getWorkerBase();
+      $('workerUrl').value = base;
+      $('curlExample').textContent = base ? buildCurl(base) : 'Définissez l\'URL du Worker pour voir un exemple.';
+      try {
+        const data = await fetchStats();
+        const rows = data.results || [];
+        renderTable(rows);
+        renderKpis(rows);
+        renderBarChart(rows);
+      } catch (e) {
+        renderTable([]);
+        renderKpis([]);
+        renderBarChart([]);
+      }
+    }
+
+    $('saveUrlBtn').addEventListener('click', () => {
+      const val = $('workerUrl').value.trim();
+      setWorkerBase(val);
+      $('curlExample').textContent = val ? buildCurl(val) : '';
+      load();
+    });
+
+    $('refreshBtn').addEventListener('click', () => load());
+
+    document.addEventListener('DOMContentLoaded', load);
+  </script>
+</body>
+</html>
