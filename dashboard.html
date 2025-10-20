@@ -4,86 +4,103 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Analytics - Carte de visite</title>
+  <link href="assets/bootstrap.min.css" rel="stylesheet">
   <style>
-    :root{--bg:#0b1020;--panel:#0f172a;--border:#1f2942;--text:#e6ecf5;--muted:#93a4bf;--primary:#60a5fa;--accent:#34d399}
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;margin:0;background:linear-gradient(180deg,#0b1020 0%,#0b1224 100%);color:var(--text)}
-    header{padding:18px 20px;background:#0c1326;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:2;display:flex;gap:12px;align-items:center}
-    header h1{font-size:18px;margin:0;color:#fff}
-    .container{padding:22px;max-width:1100px;margin:0 auto}
-    .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-    .row{display:grid;grid-template-columns:1fr;gap:16px}
-    @media(min-width:900px){.row{grid-template-columns:1.3fr 1fr}}
-    label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
-    input[type="url"]{width:100%;padding:12px 12px;border-radius:10px;border:1px solid var(--border);background:#0b1220;color:var(--text)}
-    button{background:var(--primary);border:none;color:#0b1020;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600}
-    button.secondary{background:#1e293b;color:#e2e8f0}
-    button:disabled{opacity:.6;cursor:not-allowed}
-    table{width:100%;border-collapse:collapse}
-    th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}
-    th{color:var(--muted);font-weight:700;letter-spacing:.02em}
-    .muted{color:var(--muted);font-size:12px}
-    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    .kpi{background:#0b1220;border:1px solid var(--border);border-radius:12px;padding:14px}
-    .kpi .label{font-size:12px;color:var(--muted)}
-    .kpi .value{font-size:24px;font-weight:800;color:#fff}
-    .footer{padding:20px;text-align:center;color:var(--muted);font-size:12px}
-    .row-actions{display:flex;gap:8px;align-items:end}
+    body{background:linear-gradient(180deg,#0b1020 0%,#0b1224 100%)}
+    .text-muted-small{font-size:12px}
   </style>
 </head>
 <body>
-  <header>
-    <h1>Dashboard Analytics</h1>
-  </header>
-  <div class="container">
-    <div class="card">
-      <div class="row-actions">
-        <div style="flex:1">
-          <label for="workerUrl">URL du Worker Cloudflare (base)</label>
-          <input id="workerUrl" type="url" placeholder="https://cv-analytics.votrecompte.workers.dev" />
-          <div class="muted">L'API lira <code>https://cv-analytics.wyxvgyqftb.workers.dev/stats</code></div>
-        </div>
-        <div>
-          <button id="saveUrlBtn">Enregistrer</button>
-        </div>
-        <div>
-          <button id="refreshBtn" class="secondary">Rafraîchir</button>
-        </div>
-      </div>
-      <div id="status" class="muted" style="margin-top:8px"></div>
+  <nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+      <span class="navbar-brand mb-0 h1">Dashboard Analytics</span>
     </div>
-
-    <div class="kpis">
-      <div class="kpi"><div class="label">Événements total</div><div id="kpiTotal" class="value">–</div></div>
-      <div class="kpi"><div class="label">Types distincts</div><div id="kpiTypes" class="value">–</div></div>
-      <div class="kpi"><div class="label">Top événement</div><div id="kpiTop" class="value">–</div></div>
-    </div>
-
-    <div class="row">
-      <div class="card">
-        <h3 style="margin:0 0 8px 0;color:#fff;font-size:16px">Répartition par événement</h3>
-        <canvas id="barChart" height="200"></canvas>
-      </div>
-      <div class="card">
-        <h3 style="margin:0 0 8px 0;color:#fff;font-size:16px">Tableau des événements</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Événement</th>
-              <th>Compteur</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody"></tbody>
-        </table>
+  </nav>
+  <div class="container my-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="row g-3 align-items-end">
+          <div class="col-lg-6">
+            <label for="workerUrl" class="form-label">URL du Worker Cloudflare (base)</label>
+            <input id="workerUrl" type="url" class="form-control" placeholder="https://cv-analytics.votrecompte.workers.dev" />
+            <div class="form-text">L'API lira <code>https://cv-analytics.wyxvgyqftb.workers.dev/stats</code></div>
+          </div>
+          <div class="col-auto">
+            <button id="saveUrlBtn" class="btn btn-primary">Enregistrer</button>
+          </div>
+          <div class="col-auto">
+            <button id="refreshBtn" class="btn btn-outline-secondary">Rafraîchir</button>
+          </div>
+        </div>
+        <div id="status" class="text-muted text-muted-small mt-2"></div>
       </div>
     </div>
 
-    <div class="card">
-      <h3 style="margin:0 0 8px 0;color:#fff;font-size:16px">Exemple d'appel API</h3>
-      <pre id="curlExample" class="muted" style="white-space:pre-wrap"></pre>
+    <div class="row g-3 my-3">
+      <div class="col-md-4">
+        <div class="card bg-dark text-white h-100">
+          <div class="card-body">
+            <div class="text-muted text-uppercase text-muted-small">Événements total</div>
+            <div id="kpiTotal" class="h3 mb-0">–</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card bg-dark text-white h-100">
+          <div class="card-body">
+            <div class="text-muted text-uppercase text-muted-small">Types distincts</div>
+            <div id="kpiTypes" class="h3 mb-0">–</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card bg-dark text-white h-100">
+          <div class="card-body">
+            <div class="text-muted text-uppercase text-muted-small">Top événement</div>
+            <div id="kpiTop" class="h5 mb-0">–</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-lg-7">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title">Répartition par événement</h5>
+            <canvas id="barChart" height="220"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title">Tableau des événements</h5>
+            <div class="table-responsive">
+              <table class="table table-dark table-striped table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Événement</th>
+                    <th class="text-end">Compteur</th>
+                  </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm my-3">
+      <div class="card-body">
+        <h5 class="card-title">Exemple d'appel API</h5>
+        <pre id="curlExample" class="text-muted" style="white-space:pre-wrap"></pre>
+      </div>
     </div>
   </div>
 
-  <div class="footer">Fournit par Cloudflare D1 + Workers • LocalStorage pour la configuration</div>
+  <footer class="py-3 text-center text-muted text-muted-small">Fournit par Cloudflare D1 + Workers • LocalStorage pour la configuration</footer>
 
   <script>
     const $ = (id) => document.getElementById(id);
@@ -129,6 +146,7 @@
         const tr = document.createElement('tr');
         const tdA = document.createElement('td');
         const tdB = document.createElement('td');
+        tdB.className = 'text-end';
         tdA.textContent = translateName(r.name);
         tdB.textContent = r.count;
         tr.appendChild(tdA); tr.appendChild(tdB);
@@ -172,14 +190,10 @@
         const x = pad + i * barW + barW * 0.15;
         const barH = (v / max) * (h - pad * 2);
         const y = h - pad - barH;
-        // dégradé de bleu → vert
-        const gradient = ctx.createLinearGradient(0, y, 0, h - pad);
-        gradient.addColorStop(0,'#60a5fa');
-        gradient.addColorStop(1,'#34d399');
-        ctx.fillStyle = gradient;
+        ctx.fillStyle = '#0d6efd';
         ctx.fillRect(x, y, barW * 0.7, barH);
         // label
-        ctx.fillStyle = '#b6c2d6';
+        ctx.fillStyle = '#adb5bd';
         ctx.font = '12px system-ui';
         ctx.textAlign = 'center';
         ctx.fillText(labels[i], x + barW * 0.35, h - pad + 14);
@@ -221,7 +235,7 @@
 
     document.addEventListener('DOMContentLoaded', load);
   </script>
+  <script src="assets/bootstrap.min.js"></script>
 </body>
 </html>
-
 
