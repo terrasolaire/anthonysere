@@ -1,121 +1,129 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Analytics - Dark Neon</title>
-  <link href="assets/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Analytics - Thème clair</title>
+  <link href="assets/bootstrap.min.css" rel="stylesheet" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
     :root {
-      --bg-dark: #080a14;
-      --bg-darker: #05060d;
-      --accent: #00d4ff;
-      --accent-glow: 0 0 20px rgba(0, 212, 255, 0.6);
-      --accent-glow-soft: 0 0 12px rgba(0, 212, 255, 0.35);
-      --text-light: #eaf7ff;
-      --text-muted: #7a8aa0;
-      --card-bg: rgba(255, 255, 255, 0.03);
-      --card-border: rgba(0, 212, 255, 0.15);
-      --gradient-accent: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+      --blue: #004779;
+      --green: #05683a;
+      --yellow: #ffca2e;
+      --text-dark: #1a1a1a;
+      --text-muted: #555;
+      --bg-light: #f8fafc;
+      --card-bg: #ffffff;
+      --border-light: #e6e6e6;
     }
 
     body {
-      background: radial-gradient(circle at top left, #101225 0%, #06070f 80%);
-      color: var(--text-light);
+      background-color: var(--bg-light);
+      color: var(--text-dark);
       font-family: "Poppins", system-ui, sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
-      padding-bottom: 70px;
+      padding-bottom: 80px;
     }
 
     .navbar {
-      background: rgba(0, 0, 0, 0.6);
-      border-bottom: 1px solid var(--card-border);
-      backdrop-filter: blur(12px);
-      box-shadow: var(--accent-glow-soft);
+      background: linear-gradient(90deg, var(--blue), var(--green));
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     }
 
     .navbar-brand {
+      color: white !important;
       font-weight: 600;
       letter-spacing: 0.6px;
-      color: var(--accent);
-      text-shadow: var(--accent-glow);
     }
 
     .card {
       background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 1.2rem;
-      box-shadow: 0 0 10px rgba(0, 212, 255, 0.08);
-      transition: all 0.35s ease;
+      border: 1px solid var(--border-light);
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      transition: all 0.25s ease;
+      overflow: visible;
     }
 
     .card:hover {
-      transform: translateY(-4px);
-      border-color: var(--accent);
-      box-shadow: 0 0 25px rgba(0, 212, 255, 0.25);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 25px rgba(0,0,0,0.08);
     }
 
     .card-title {
       font-weight: 600;
-      color: var(--accent);
-      text-shadow: 0 0 6px rgba(0, 212, 255, 0.4);
+      color: var(--blue);
     }
 
     .kpi-card {
-      background: linear-gradient(180deg, rgba(0, 212, 255, 0.1), transparent);
       text-align: center;
+      border-top: 4px solid var(--yellow);
+      background: var(--card-bg);
     }
 
     .kpi-card .h3,
     .kpi-card .h5 {
-      color: #fff;
-      text-shadow: 0 0 8px rgba(0, 212, 255, 0.8);
+      color: var(--text-dark);
+      font-weight: 600;
     }
 
     .text-muted-small {
       font-size: 12px;
       color: var(--text-muted);
-      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
     }
 
     table {
-      font-size: 0.9rem;
+      font-size: 0.95rem;
     }
 
     table thead th {
-      color: var(--accent);
-      border-color: var(--card-border);
-      text-shadow: 0 0 4px rgba(0, 212, 255, 0.3);
+      color: var(--blue);
+      border-color: var(--border-light);
+      font-weight: 600;
     }
 
     table tbody tr:hover {
-      background-color: rgba(0, 212, 255, 0.05);
+      background-color: rgba(0,71,121,0.05);
     }
 
     footer {
       font-size: 0.85rem;
       color: var(--text-muted);
-      border-top: 1px solid var(--card-border);
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(8px);
+      border-top: 1px solid var(--border-light);
+      background: white;
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
       padding: 0.8rem 0;
-      box-shadow: 0 -2px 12px rgba(0, 212, 255, 0.15);
+      text-align: center;
     }
 
-    /* Scrollbar stylée */
-    ::-webkit-scrollbar {
-      width: 8px;
+    .chart-wrapper {
+      position: relative;
+      overflow: visible;
+      padding-bottom: 30px;
+      height: 260px;
     }
-    ::-webkit-scrollbar-thumb {
-      background: var(--gradient-accent);
-      border-radius: 6px;
+
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 10px;
+      background: #fdfdfd;
+      border: 1px solid #eee;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    @media (max-width: 767px) {
+      canvas {
+        height: 300px !important;
+      }
     }
   </style>
 </head>
@@ -127,9 +135,9 @@
   </nav>
 
   <div class="container my-4">
-    <!-- KPIs -->
-    <div class="row g-3 my-3">
-      <div class="col-md-4">
+
+    <div class="row g-2 my-3">
+      <div class="col-md-6">
         <div class="card kpi-card h-100">
           <div class="card-body">
             <div class="text-muted text-uppercase text-muted-small">Événements total</div>
@@ -137,15 +145,8 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="card kpi-card h-100">
-          <div class="card-body">
-            <div class="text-muted text-uppercase text-muted-small">Types distincts</div>
-            <div id="kpiTypes" class="h3 mb-0 fw-bold">–</div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
+
+      <div class="col-md-6">
         <div class="card kpi-card h-100">
           <div class="card-body">
             <div class="text-muted text-uppercase text-muted-small">Top événement</div>
@@ -155,22 +156,87 @@
       </div>
     </div>
 
-    <!-- Graph + Tableau principal -->
-    <div class="row g-4">
-      <div class="col-lg-7">
+    <div class="row g-4 mb-4">
+      <div class="col-lg-6">
         <div class="card shadow-sm h-100">
           <div class="card-body">
             <h5 class="card-title">📊 Répartition par événement</h5>
-            <canvas id="barChart" height="220"></canvas>
+            <div class="chart-wrapper">
+              <canvas id="barChart"></canvas>
+            </div>
           </div>
         </div>
       </div>
+
+      <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title">☎️ Clics par contact</h5>
+            <div class="chart-wrapper">
+              <canvas id="contactChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-1 mb-4">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">🕒 Événements récents</h5>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>date</th>
+                    <th>heure</th>
+                    <th>Événement</th>
+                    <th>Pays</th>
+                  </tr>
+                </thead>
+                <tbody id="tableRecent"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-1 mb-4">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">📅 Tendances hebdomadaires (15 derniers jours)</h5>
+            <div class="chart-wrapper">
+              <canvas id="weeklyChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-1 mb-4">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">🗓️ Tendances mensuelles (dernier mois)</h5>
+            <div class="chart-wrapper">
+              <canvas id="monthlyChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+
       <div class="col-lg-5">
         <div class="card shadow-sm h-100">
           <div class="card-body">
             <h5 class="card-title">🧮 Tableau des événements</h5>
             <div class="table-responsive">
-              <table class="table table-dark table-hover align-middle mb-0">
+              <table class="table table-hover align-middle mb-0">
                 <thead>
                   <tr>
                     <th>Événement</th>
@@ -184,32 +250,12 @@
         </div>
       </div>
 
-      <!-- Détails -->
-      <div class="col-12">
+      <div class="col-lg-7">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">☎️ Clics de contact</h5>
+            <h5 class="card-title">💬 Détails par contact</h5>
             <div class="table-responsive">
-              <table class="table table-dark table-hover align-middle mb-0">
-                <thead>
-                  <tr>
-                    <th>Type de contact</th>
-                    <th class="text-end">Compteur</th>
-                  </tr>
-                </thead>
-                <tbody id="tableContact"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">💬 Détails par valeur</h5>
-            <div class="table-responsive">
-              <table class="table table-dark table-hover align-middle mb-0">
+              <table class="table table-hover align-middle mb-0">
                 <thead>
                   <tr>
                     <th>Type</th>
@@ -224,59 +270,293 @@
         </div>
       </div>
 
-      <div class="col-12">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">🔗 Répartition des partages</h5>
-            <div class="table-responsive">
-              <table class="table table-dark table-hover align-middle mb-0">
-                <thead>
-                  <tr>
-                    <th>Méthode</th>
-                    <th class="text-end">Compteur</th>
-                  </tr>
-                </thead>
-                <tbody id="tableShare"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">🕒 Événements récents</h5>
-            <div class="table-responsive">
-              <table class="table table-dark table-hover align-middle mb-0">
-                <thead>
-                  <tr>
-                    <th>Horodatage</th>
-                    <th>Événement</th>
-                    <th>Page</th>
-                    <th>Pays</th>
-                  </tr>
-                </thead>
-                <tbody id="tableRecent"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
-  <footer class="text-center">
-    ⚙️ <strong>Cloudflare D1 + Workers</strong> • Données locales via LocalStorage
-  </footer>
+  <footer></footer>
 
-  <script src="assets/bootstrap.min.js"></script>
-  <!-- Ton JS original ici -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <script>
-    // (colle ici ton script d’origine complet)
+    const $ = id => document.getElementById(id);
+    const WORKER_BASE = 'https://cv-analytics.wyxvgyqftb.workers.dev';
+    function getWorkerBase(){ return WORKER_BASE; }
+
+    async function fetchStats(endpoint){ 
+      const res = await fetch(getWorkerBase() + endpoint, {cache:'no-store'}); 
+      if(!res.ok) throw new Error('Fetch failed'); 
+      return await res.json(); 
+    }
+
+    function translateName(key){
+      const map={'page_view':'Vue de page','share_contact':'Partage de la carte','add_to_contacts':'Ajout aux contacts','contact_click':'Clic sur contact','copy_contact':'Copie du lien','test_event':'Événement test'};
+      return map[key]||key;
+    }
+
+    function translateContactType(t){
+      const map={ phone:'Téléphone', email:'Email', address:'Adresse', website:'Site / Réseau', social:'Réseaux sociaux' };
+      return map[t]||t||'—';
+    }
+
+    function renderTable(rows){
+      const tbody = $('tableBody'); if(!tbody) return;
+      tbody.innerHTML=''; rows.forEach(r=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${translateName(r.name)}</td><td class="text-end">${r.count}</td>`; tbody.appendChild(tr); });
+    }
+
+    function simplifyContactValue(type, value){
+        if(!value) return '—';
+        if(type === 'website'){
+          if(value.includes('linkedin')) return 'LinkedIn';
+          if(value.includes('facebook')) return 'Facebook';
+          if(value.includes('instagram')) return 'Instagram';
+          return 'Site Web';
+        }
+        return value;
+      }
+      
+      function renderContactValueTable(rows){
+        const tbody = $('tableContactValue'); if(!tbody) return;
+        tbody.innerHTML='';
+        rows.forEach(r=>{
+          const tr=document.createElement('tr');
+          const displayValue = simplifyContactValue(r.type,r.value);
+          tr.innerHTML=`<td>${translateContactType(r.type)}</td><td>${displayValue}</td><td class="text-end">${r.count}</td>`;
+          tbody.appendChild(tr);
+        });
+      }
+
+
+    function renderKpis(rows){
+      const total = rows.reduce((s,r)=>s+(r.count||0),0);
+      const types = rows.length;
+      const top = rows[0]?`${translateName(rows[0].name)} (${rows[0].count})`:'–';
+      const elTotal = $('kpiTotal');
+      const elTypes = $('kpiTypes');
+      const elTop = $('kpiTop');
+      if (elTotal) elTotal.textContent = total;
+      if (elTypes) elTypes.textContent = types; // optionnel si présent
+      if (elTop) elTop.textContent = top;
+    }
+
+    function renderBarChart(rows){
+      const ctx = $('barChart').getContext('2d');
+      const labels = rows.map(r=>translateName(r.name));
+      const values = rows.map(r=>Number(r.count||0));
+      new Chart(ctx,{
+        type:'bar',
+        data:{
+          labels,
+          datasets:[{
+            label:'Événements',
+            data:values,
+            backgroundColor:['#004779','#05683a','#ffca2e','#ff6f61','#6f42c1','#0dcaf0']
+          }]
+        },
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          plugins:{ legend:{ display:false } },
+          scales:{
+            y:{
+              beginAtZero:true,
+              ticks:{
+                precision:0,
+                stepSize:1,
+                callback:(val)=> Number.isInteger(val)? val : ''
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function renderContactChart(rows){
+      const ctx = $('contactChart').getContext('2d');
+      const labels = rows.map(r=>translateContactType(r.type));
+      const values = rows.map(r=>Number(r.count||0));
+      new Chart(ctx,{
+        type:'bar',
+        data:{
+          labels,
+          datasets:[{
+            label:'Clics',
+            data:values,
+            backgroundColor:['#004779','#05683a','#ffca2e','#ff6f61']
+          }]
+        },
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          plugins:{ legend:{ display:false } },
+          scales:{
+            y:{
+              beginAtZero:true,
+              ticks:{
+                precision:0,
+                stepSize:1,
+                callback:(val)=> Number.isInteger(val)? val : ''
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function renderShareTable(rows){
+      const tbody = $('tableShare');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      const label = (m)=> m==='native_share' ? 'Partage natif' : (m==='copy_link' ? 'Copie du lien' : (m||'—'));
+      (rows||[]).forEach(r => {
+        const tr = document.createElement('tr');
+        const tdA = document.createElement('td');
+        const tdB = document.createElement('td');
+        tdB.className = 'text-end';
+        tdA.textContent = label(r.method);
+        tdB.textContent = r.count;
+        tr.appendChild(tdA); tr.appendChild(tdB);
+        tbody.appendChild(tr);
+      });
+    }
+
+    function startOfISOWeek(d){ const dt=new Date(d); const day=(dt.getDay()+6)%7; dt.setHours(0,0,0,0); dt.setDate(dt.getDate()-day); return dt; }
+    function yearWeekKey(d){ const s=startOfISOWeek(d); return `${s.getFullYear()}-W${String(Math.ceil((((s - new Date(s.getFullYear(),0,1)) / 86400000) + ((new Date(s.getFullYear(),0,1).getDay()+6)%7)+1)/7)).padStart(2,'0')}`; }
+    function yearMonthKey(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
+
+    function buildTimeSeriesByType(events){
+      const byWeek = new Map();
+      const byMonth = new Map();
+      const valid = ['contact_click'];
+      events.forEach(ev=>{
+        if(!valid.includes(ev.name)) return;
+        const d = ev.ts ? new Date(ev.ts) : null; if(!d) return;
+        let type = null;
+        try { const p = typeof ev.props==='string' ? JSON.parse(ev.props) : ev.props; type = p?.type || null; } catch(_){}
+        if(!type) return;
+        const wk = yearWeekKey(d);
+        const mk = yearMonthKey(d);
+        if(!byWeek.has(wk)) byWeek.set(wk,{});
+        if(!byMonth.has(mk)) byMonth.set(mk,{});
+        byWeek.get(wk)[type] = (byWeek.get(wk)[type]||0)+1;
+        byMonth.get(mk)[type] = (byMonth.get(mk)[type]||0)+1;
+      });
+      return { byWeek, byMonth };
+    }
+
+    function renderStackedChart(canvasId, labels, datasets){
+      const ctx = $(canvasId).getContext('2d');
+      new Chart(ctx,{
+        type:'bar',
+        data:{ labels, datasets },
+        options:{
+          responsive:true,
+          plugins:{ legend:{ position:'bottom' } },
+          scales:{ x:{ stacked:true }, y:{ stacked:true, beginAtZero:true, ticks:{ precision:0, stepSize:1, callback:(v)=>Number.isInteger(v)?v:'' } } }
+        }
+      });
+    }
+
+    function datasetFor(keys, data, type, color){
+      return { label: translateContactType(type), data: keys.map(k=> (data.get(k)?.[type]||0)), backgroundColor: color };
+    }
+
+    function renderDonut(canvasId, labels, data, colors){
+      const ctx = $(canvasId).getContext('2d');
+      new Chart(ctx,{
+        type:'doughnut',
+        data:{ labels, datasets:[{ data, backgroundColor: colors }]},
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom' } } }
+      });
+    }
+
+    function sumTypesInRange(events, days){
+      const cutoff = Date.now() - days*24*60*60*1000;
+      const totals = { phone:0, email:0, address:0, website:0 };
+      events.forEach(ev=>{
+        if(ev.name!=='contact_click') return;
+        const ts = ev.ts ? Date.parse(ev.ts) : NaN; if(!ts || ts<cutoff) return;
+        let type=null; try{ const p = typeof ev.props==='string'? JSON.parse(ev.props):ev.props; type=p?.type||null; }catch(_){}
+        if(totals[type]!==undefined) totals[type] += 1;
+      });
+      return totals;
+    }
+
+    async function renderTrends(){
+      try{
+        const recent = await fetchStats('/events/recent?limit=500');
+        const list = Array.isArray(recent)? recent : (recent.results||[]);
+        const last15 = sumTypesInRange(list, 15);
+        const last30 = sumTypesInRange(list, 30);
+        const labels = ['Téléphone','Email','Adresse','Site / Réseau'];
+        const colors = ['#004779','#05683a','#ff6f61','#ffca2e'];
+        renderDonut('weeklyChart', labels, [last15.phone,last15.email,last15.address,last15.website], colors);
+        renderDonut('monthlyChart', labels, [last30.phone,last30.email,last30.address,last30.website], colors);
+      }catch(e){ console.error('trends error', e); }
+    }
+
+    async function load(){
+      try{
+        const stats = await fetchStats('/stats');
+        const normalized = stats.map(r=>({name:r.name,count:Number(r.count||0)})).sort((a,b)=>b.count-a.count);
+        renderTable(normalized);
+        renderKpis(normalized);
+        renderBarChart(normalized);
+
+        const byContact = await fetchStats('/stats/by-contact');
+        renderContactChart(byContact.map(r=>({type:r.type,count:Number(r.count||0)})));
+
+        const byValue = await fetchStats('/stats/by-contact-value');
+        renderContactValueTable(byValue.map(r=>({type:r.type,value:r.value,count:Number(r.count||0)})));
+
+        const byShare = await fetchStats('/stats/by-share');
+        renderShareTable(byShare.map(r=>({method:r.method,count:Number(r.count||0)})));
+
+        try {
+          const recent = await fetchStats('/events/recent?limit=50');
+          console.log('recent events raw:', recent);
+          const list = Array.isArray(recent) ? recent : (recent.results||[]);
+          const tbody = $('tableRecent');
+          if (tbody) {
+            tbody.innerHTML = '';
+            if (!list.length) {
+              const tr = document.createElement('tr');
+              const td = document.createElement('td');
+              td.colSpan = 4;
+              td.textContent = 'Aucun événement';
+              td.className = 'text-center text-muted';
+              tr.appendChild(td);
+              tbody.appendChild(tr);
+            } else {
+              list.forEach(ev => {
+                const tr = document.createElement('tr');
+                const tdDate = document.createElement('td');
+                const tdTime = document.createElement('td');
+                const tdEvt  = document.createElement('td');
+                const tdCountry = document.createElement('td');
+                const d = ev.ts ? new Date(ev.ts) : null;
+                tdDate.textContent = d ? d.toLocaleDateString('fr-FR') : '—';
+                tdTime.textContent = d ? d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
+                tdEvt.textContent = translateName(ev.name || '—');
+                tdCountry.textContent = ev.country || '—';
+                tr.appendChild(tdDate); tr.appendChild(tdTime); tr.appendChild(tdEvt); tr.appendChild(tdCountry);
+                tbody.appendChild(tr);
+              });
+            }
+          }
+        } catch(err) { 
+          console.error('recent events error:', err);
+          const tb=$('tableRecent'); if (tb) tb.innerHTML=''; 
+        }
+
+        await renderTrends();
+      }catch(e){ console.error(e); }
+    }
+
+    document.addEventListener('DOMContentLoaded',load);
   </script>
 </body>
 </html>
+
 
 
 
