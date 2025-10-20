@@ -587,7 +587,7 @@
         const colors = ['#004779','#05683a','#ff6f61','#ffca2e','#6f42c1'];
         renderDonut('weeklyChart', labels, [last15.phone,last15.email,last15.address,last15.website,last15.page_view], colors);
         renderDonut('monthlyChart', labels, [last30.phone,last30.email,last30.address,last30.website,last30.page_view], colors);
-      }catch(e){ console.error('trends error', e); }
+      }catch(e){}
     }
 
     async function load(){
@@ -609,7 +609,6 @@
 
         try {
           const recent = await fetchStats('/events/recent?limit=15');
-          console.log('recent events raw:', recent);
           const list = Array.isArray(recent) ? recent : (recent.results||[]);
           const tbody = $('tableRecent');
           if (tbody) {
@@ -640,12 +639,11 @@
             }
           }
         } catch(err) { 
-          console.error('recent events error:', err);
           const tb=$('tableRecent'); if (tb) tb.innerHTML=''; 
         }
 
         await renderTrends();
-      }catch(e){ console.error(e); }
+      }catch(e){}
     }
 
     document.addEventListener('DOMContentLoaded',load);
